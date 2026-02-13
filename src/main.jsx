@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import WordGuesser from './game.jsx';
+import LastLetter from './game.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <WordGuesser />
+    <LastLetter />
   </React.StrictMode>
 );
