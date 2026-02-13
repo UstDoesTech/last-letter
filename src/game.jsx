@@ -33,7 +33,7 @@ export default function LastLetter() {
   const [usePhonicsClusters, setUsePhonicsClusters] = useState(true);
   const [isVersusMode, setIsVersusMode] = useState(false);
 
-  const maxWrong = gameMode === "children" ? 8 : difficulty === "challenge" ? 6 : isVersusMode ? 8 : 8;
+  const maxWrong = gameMode === "children" ? 8 : difficulty === "challenge" ? 6 : 8;
   const isChild = user && user.age < 13;
   const theme = getTheme(isChild, gameMode);
 
@@ -107,7 +107,7 @@ export default function LastLetter() {
   };
 
   const startVersusGame = (customWord) => {
-    setGameMode("versus");
+    setGameMode("adult");
     setDifficulty("standard");
     setVisualStyle("classic");
     setCurrentWord(customWord);
