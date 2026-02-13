@@ -7,6 +7,7 @@ import LoginScreen from "./screens/LoginScreen.jsx";
 import MenuScreen from "./screens/MenuScreen.jsx";
 import LeaderboardScreen from "./screens/LeaderboardScreen.jsx";
 import GameScreen from "./screens/GameScreen.jsx";
+import VersusSetupScreen from "./screens/VersusSetupScreen.jsx";
 
 // ─── Main App ───
 export default function LastLetter() {
@@ -30,8 +31,9 @@ export default function LastLetter() {
   const [showHint, setShowHint] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [usePhonicsClusters, setUsePhonicsClusters] = useState(true);
+  const [isVersusMode, setIsVersusMode] = useState(false);
 
-  const maxWrong = gameMode === "children" ? 8 : difficulty === "challenge" ? 6 : 8;
+  const maxWrong = gameMode === "children" ? 8 : difficulty === "challenge" ? 6 : isVersusMode ? 8 : 8;
   const isChild = user && user.age < 13;
   const theme = getTheme(isChild, gameMode);
 
@@ -94,7 +96,26 @@ export default function LastLetter() {
     setGameMode(mode);
     setDifficulty(diff);
     setVisualStyle(mode === "children" ? "blocks" : "classic");
+    setIsVersusMode(false);
     pickNewWord(mode, diff);
+    setScreen("game");
+  };
+
+  const startVersusMode = () => {
+    setIsVersusMode(true);
+    setScreen("versusSetup");
+  };
+
+  const startVersusGame = (customWord) => {
+    setGameMode("versus");
+    setDifficulty("standard");
+    setVisualStyle("classic");
+    setCurrentWord(customWord);
+    setGuessedLetters(new Set());
+    setWrongGuesses(0);
+    setGameStatus("playing");
+    setShowHint(false);
+    setHintUsed(false);
     setScreen("game");
   };
 
@@ -134,26 +155,30 @@ export default function LastLetter() {
       setWrongGuesses(newWrong);
       if (newWrong >= maxWrong) {
         setGameStatus("lost");
-        setStreak(0);
-        const updated = { ...user, streak: 0, gamesPlayed: (user.gamesPlayed || 0) + 1 };
-        setUser(updated); saveUser(updated);
-        localStorage.setItem(`user_${user.name.toLowerCase()}`, JSON.stringify(updated));
+        if (!isVersusMode) {
+          setStreak(0);
+          const updated = { ...user, streak: 0, gamesPlayed: (user.gamesPlayed || 0) + 1 };
+          setUser(updated); saveUser(updated);
+          localStorage.setItem(`user_${user.name.toLowerCase()}`, JSON.stringify(updated));
+        }
       }
     } else {
       const allRevealed = wordLetters.every((c) => newGuessed.has(c));
       if (allRevealed) {
         setGameStatus("won");
-        const wordScore = calculateScore();
-        const newScore = score + wordScore;
-        const newStreak = streak + 1;
-        setScore(newScore); setStreak(newStreak);
-        const updated = {
-          ...user, score: newScore, streak: newStreak,
-          gamesPlayed: (user.gamesPlayed || 0) + 1,
-          gamesWon: (user.gamesWon || 0) + 1,
-        };
-        setUser(updated); saveUser(updated);
-        localStorage.setItem(`user_${user.name.toLowerCase()}`, JSON.stringify(updated));
+        if (!isVersusMode) {
+          const wordScore = calculateScore();
+          const newScore = score + wordScore;
+          const newStreak = streak + 1;
+          setScore(newScore); setStreak(newStreak);
+          const updated = {
+            ...user, score: newScore, streak: newStreak,
+            gamesPlayed: (user.gamesPlayed || 0) + 1,
+            gamesWon: (user.gamesWon || 0) + 1,
+          };
+          setUser(updated); saveUser(updated);
+          localStorage.setItem(`user_${user.name.toLowerCase()}`, JSON.stringify(updated));
+        }
       }
     }
   };
@@ -185,6 +210,17 @@ export default function LastLetter() {
         score={score} streak={streak}
         onStartGame={startGame} onLogout={handleLogout}
         onLeaderboard={() => setScreen("leaderboard")}
+        onVersusMode={startVersusMode}
+      />
+    );
+  }
+
+  if (screen === "versusSetup") {
+    return (
+      <VersusSetupScreen
+        theme={theme}
+        onStartGame={startVersusGame}
+        onBack={() => setScreen("menu")}
       />
     );
   }
@@ -210,6 +246,7 @@ export default function LastLetter() {
         showHint={showHint} hintUsed={hintUsed}
         usePhonicsClusters={usePhonicsClusters}
         setUsePhonicsClusters={setUsePhonicsClusters}
+        isVersusMode={isVersusMode}
         onGuess={handleGuess}
         onShowHint={() => { setShowHint(true); setHintUsed(true); }}
         onNextWord={() => pickNewWord(gameMode, difficulty)}

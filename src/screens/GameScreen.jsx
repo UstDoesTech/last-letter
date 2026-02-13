@@ -20,6 +20,7 @@ export default function GameScreen({
   hintUsed,
   usePhonicsClusters,
   setUsePhonicsClusters,
+  isVersusMode,
   onGuess,
   onShowHint,
   onNextWord,
@@ -62,23 +63,36 @@ export default function GameScreen({
         >
           ← Menu
         </button>
-        <div
-          style={{
-            display: "flex",
-            gap: 16,
-            fontSize: 13,
-            fontWeight: 700,
-          }}
-        >
-          <span>
-            Score:{" "}
-            <span style={{ color: "var(--accent)" }}>{score}</span>
-          </span>
-          <span>
-            Streak:{" "}
-            <span style={{ color: "var(--correct)" }}>{streak}</span>
-          </span>
-        </div>
+        {!isVersusMode && (
+          <div
+            style={{
+              display: "flex",
+              gap: 16,
+              fontSize: 13,
+              fontWeight: 700,
+            }}
+          >
+            <span>
+              Score:{" "}
+              <span style={{ color: "var(--accent)" }}>{score}</span>
+            </span>
+            <span>
+              Streak:{" "}
+              <span style={{ color: "var(--correct)" }}>{streak}</span>
+            </span>
+          </div>
+        )}
+        {isVersusMode && (
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              color: "var(--accent)",
+            }}
+          >
+            🎮 Versus Mode
+          </div>
+        )}
       </div>
 
       <div style={{ ...cardStyle, position: "relative" }}>
@@ -121,7 +135,7 @@ export default function GameScreen({
         </div>
 
         {/* Visual toggle (adults only) */}
-        {gameMode === "adult" && (
+        {gameMode === "adult" && !isVersusMode && (
           <div
             style={{
               display: "flex",
@@ -303,7 +317,7 @@ export default function GameScreen({
                   : "Well Done!"
                 : "Game Over"}
             </div>
-            {gameStatus === "won" && (
+            {gameStatus === "won" && !isVersusMode && (
               <div
                 style={{
                   fontSize: 14,
@@ -337,13 +351,15 @@ export default function GameScreen({
                 marginTop: 14,
               }}
             >
-              <button style={btnStyle(true)} onClick={onNextWord}>
-                {gameMode === "children"
-                  ? "Play Again! 🔤"
-                  : "Next Word →"}
-              </button>
-              <button style={btnStyle(false)} onClick={onMenu}>
-                Menu
+              {!isVersusMode && (
+                <button style={btnStyle(true)} onClick={onNextWord}>
+                  {gameMode === "children"
+                    ? "Play Again! 🔤"
+                    : "Next Word →"}
+                </button>
+              )}
+              <button style={btnStyle(isVersusMode ? true : false)} onClick={onMenu}>
+                {isVersusMode ? "Back to Menu" : "Menu"}
               </button>
             </div>
           </div>

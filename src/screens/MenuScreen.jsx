@@ -9,6 +9,7 @@ export default function MenuScreen({
   onStartGame,
   onLogout,
   onLeaderboard,
+  onVersusMode,
 }) {
   const childMode = isChild;
 
@@ -167,6 +168,23 @@ export default function MenuScreen({
                   style={{ fontSize: 12, color: "var(--text-dim)" }}
                 >
                   Obscure &amp; tricky · Only 6 letters
+                </div>
+              </button>
+              <button
+                onClick={onVersusMode}
+                style={{
+                  ...btnStyle(false),
+                  textAlign: "left",
+                  padding: "16px 18px",
+                }}
+              >
+                <div style={{ fontWeight: 800, fontSize: 16 }}>
+                  🎮 Versus Mode
+                </div>
+                <div
+                  style={{ fontSize: 12, color: "var(--text-dim)" }}
+                >
+                  Player vs Player · Local play
                 </div>
               </button>
             </div>
