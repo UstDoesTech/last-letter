@@ -1,4 +1,4 @@
-import { containerStyle, cardStyle, btnStyle } from "../styles.js";
+import { containerStyle, cardStyleFor, btnStyle } from "../styles.js";
 
 export default function MenuScreen({
   theme,
@@ -10,12 +10,13 @@ export default function MenuScreen({
   onLogout,
   onLeaderboard,
   onVersusMode,
+  layout,
 }) {
   const childMode = isChild;
 
   return (
-    <div style={containerStyle(theme)}>
-      <div style={{ ...cardStyle, maxWidth: 440 }}>
+    <div style={containerStyle(theme, layout)}>
+      <div style={{ ...cardStyleFor(layout), maxWidth: layout.cardMaxWidth - 60 }}>
         <div
           style={{
             display: "flex",
@@ -25,14 +26,14 @@ export default function MenuScreen({
           }}
         >
           <div>
-            <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>
+            <h2 style={{ margin: 0, fontSize: layout.titleFontSize - 2, fontWeight: 800 }}>
               {childMode ? "📚" : "🔠"} Hey, {user.name}!
             </h2>
             <p
               style={{
                 color: "var(--text-dim)",
                 margin: "4px 0 0",
-                fontSize: 13,
+                fontSize: layout.bodyFontSize,
               }}
             >
               Score: <b style={{ color: "var(--accent)" }}>{score}</b> ·
@@ -41,9 +42,9 @@ export default function MenuScreen({
           </div>
           <button
             style={{
-              ...btnStyle(false),
+              ...btnStyle(false, layout),
               padding: "8px 14px",
-              fontSize: 12,
+              fontSize: layout.bodyFontSize - 1,
             }}
             onClick={onLogout}
           >
@@ -98,15 +99,15 @@ export default function MenuScreen({
                   key={diff}
                   onClick={() => onStartGame("children", diff)}
                   style={{
-                    ...btnStyle(false),
+                    ...btnStyle(false, layout),
                     textAlign: "left",
-                    padding: "16px 18px",
+                    padding: layout.device === "mobile" ? "14px 14px" : "16px 18px",
                     display: "flex",
                     flexDirection: "column",
                     gap: 2,
                   }}
                 >
-                  <span style={{ fontWeight: 800, fontSize: 16 }}>
+                  <span style={{ fontWeight: 800, fontSize: layout.btnFontSize }}>
                     {label}
                   </span>
                   <span
@@ -119,15 +120,15 @@ export default function MenuScreen({
               <button
                 onClick={onVersusMode}
                 style={{
-                  ...btnStyle(false),
+                  ...btnStyle(false, layout),
                   textAlign: "left",
-                  padding: "16px 18px",
+                  padding: layout.device === "mobile" ? "14px 14px" : "16px 18px",
                   display: "flex",
                   flexDirection: "column",
                   gap: 2,
                 }}
               >
-                <span style={{ fontWeight: 800, fontSize: 16 }}>
+                <span style={{ fontWeight: 800, fontSize: layout.btnFontSize }}>
                   🎮 Versus Mode
                 </span>
                 <span
@@ -159,12 +160,12 @@ export default function MenuScreen({
               <button
                 onClick={() => onStartGame("adult", "standard")}
                 style={{
-                  ...btnStyle(false),
+                  ...btnStyle(false, layout),
                   textAlign: "left",
-                  padding: "16px 18px",
+                  padding: layout.device === "mobile" ? "14px 14px" : "16px 18px",
                 }}
               >
-                <div style={{ fontWeight: 800, fontSize: 16 }}>
+                <div style={{ fontWeight: 800, fontSize: layout.btnFontSize }}>
                   🔠 Standard
                 </div>
                 <div
@@ -176,12 +177,12 @@ export default function MenuScreen({
               <button
                 onClick={() => onStartGame("adult", "challenge")}
                 style={{
-                  ...btnStyle(false),
+                  ...btnStyle(false, layout),
                   textAlign: "left",
-                  padding: "16px 18px",
+                  padding: layout.device === "mobile" ? "14px 14px" : "16px 18px",
                 }}
               >
-                <div style={{ fontWeight: 800, fontSize: 16 }}>
+                <div style={{ fontWeight: 800, fontSize: layout.btnFontSize }}>
                   🔥 Challenge
                 </div>
                 <div
@@ -193,12 +194,12 @@ export default function MenuScreen({
               <button
                 onClick={onVersusMode}
                 style={{
-                  ...btnStyle(false),
+                  ...btnStyle(false, layout),
                   textAlign: "left",
-                  padding: "16px 18px",
+                  padding: layout.device === "mobile" ? "14px 14px" : "16px 18px",
                 }}
               >
-                <div style={{ fontWeight: 800, fontSize: 16 }}>
+                <div style={{ fontWeight: 800, fontSize: layout.btnFontSize }}>
                   🎮 Versus Mode
                 </div>
                 <div
@@ -214,7 +215,7 @@ export default function MenuScreen({
         <button
           onClick={onLeaderboard}
           style={{
-            ...btnStyle(false),
+            ...btnStyle(false, layout),
             width: "100%",
             marginTop: 16,
             textAlign: "center",

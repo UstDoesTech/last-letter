@@ -1,6 +1,5 @@
 import ScatteredAlphabetSVG from "../components/ScatteredAlphabetSVG.jsx";
-import { containerStyle, cardStyle, btnStyle, inputStyle } from "../styles.js";
-import { adultTheme } from "../styles.js";
+import { containerStyle, cardStyleFor, btnStyle, inputStyle, getTheme } from "../styles.js";
 
 export default function LoginScreen({
   loginName,
@@ -10,20 +9,22 @@ export default function LoginScreen({
   loginError,
   setLoginError,
   onLogin,
+  prefersDark,
+  layout,
 }) {
-  // Login always uses the adult (dark) theme
-  const theme = adultTheme;
+  // Login uses system theme preference
+  const theme = getTheme(false, "adult", prefersDark);
 
   return (
-    <div style={containerStyle(theme)}>
-      <div style={{ ...cardStyle, maxWidth: 400, marginTop: "10vh" }}>
+    <div style={containerStyle(theme, layout)}>
+      <div style={{ ...cardStyleFor(layout), maxWidth: layout.loginMaxWidth, marginTop: layout.loginMarginTop }}>
         <div style={{ textAlign: "center", marginBottom: 20 }}>
           <ScatteredAlphabetSVG />
           <p
             style={{
               color: "var(--text-dim)",
               margin: "8px 0 0",
-              fontSize: 13,
+              fontSize: layout.bodyFontSize,
             }}
           >
             Guess the word before you lose your last letter!
@@ -98,7 +99,7 @@ export default function LoginScreen({
             </div>
           )}
           <button
-            style={{ ...btnStyle(true), width: "100%", marginTop: 4 }}
+            style={{ ...btnStyle(true, layout), width: "100%", marginTop: 4 }}
             onClick={onLogin}
           >
             Play →

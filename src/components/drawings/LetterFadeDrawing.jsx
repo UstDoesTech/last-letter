@@ -1,5 +1,5 @@
 // ─── Letter "Z" that progressively erases/dissolves ───
-export default function LetterFadeDrawing({ wrongGuesses, maxWrong }) {
+export default function LetterFadeDrawing({ wrongGuesses, maxWrong, layout }) {
   const remaining = maxWrong - wrongGuesses;
 
   const cols = 5;
@@ -21,16 +21,16 @@ export default function LetterFadeDrawing({ wrongGuesses, maxWrong }) {
   }
 
   const tilesToShow = Math.ceil((remaining / maxWrong) * tiles.length);
-  const baseColors = ["#58A6FF", "#79B8FF", "#388BFD", "#1F6FEB", "#58A6FF"];
+  const baseColors = ["var(--accent)", "var(--accent)", "var(--accent)", "var(--accent)", "var(--accent)"];
 
   return (
-    <svg viewBox="0 0 200 200" style={{ width: "100%", maxWidth: 220, height: "auto" }}>
+    <svg viewBox="0 0 200 200" style={{ width: "100%", maxWidth: layout?.drawingMaxWidth || 180, maxHeight: layout?.drawingMaxHeight || "28vh", height: "auto" }}>
       {/* Subtle grid background */}
       {Array.from({ length: 8 }).map((_, i) => (
-        <line key={`h${i}`} x1="20" y1={20 + i * 22} x2="180" y2={20 + i * 22} stroke="#21262D" strokeWidth="0.5" opacity="0.5" />
+        <line key={`h${i}`} x1="20" y1={20 + i * 22} x2="180" y2={20 + i * 22} stroke="var(--grid-line)" strokeWidth="0.5" opacity="0.5" />
       ))}
       {Array.from({ length: 6 }).map((_, i) => (
-        <line key={`v${i}`} x1={30 + i * 30} y1="10" x2={30 + i * 30} y2="190" stroke="#21262D" strokeWidth="0.5" opacity="0.5" />
+        <line key={`v${i}`} x1={30 + i * 30} y1="10" x2={30 + i * 30} y2="190" stroke="var(--grid-line)" strokeWidth="0.5" opacity="0.5" />
       ))}
 
       {/* Letter tiles */}
@@ -46,19 +46,19 @@ export default function LetterFadeDrawing({ wrongGuesses, maxWrong }) {
           </g>
         ) : (
           <g key={i}>
-            <rect x={x} y={y} width="22" height="18" rx="3" fill="none" stroke="#30363D" strokeWidth="1" strokeDasharray="3 2" opacity="0.4" />
+            <rect x={x} y={y} width="22" height="18" rx="3" fill="none" stroke="var(--border)" strokeWidth="1" strokeDasharray="3 2" opacity="0.4" />
           </g>
         );
       })}
 
       {/* Status text */}
       {wrongGuesses >= maxWrong && (
-        <text x="100" y="195" textAnchor="middle" fontSize="11" fill="#F85149" fontWeight="700" fontFamily="monospace">
+        <text x="100" y="195" textAnchor="middle" fontSize="11" fill="var(--wrong)" fontWeight="700" fontFamily="monospace">
           LETTERS LOST
         </text>
       )}
       {wrongGuesses === 0 && (
-        <text x="100" y="195" textAnchor="middle" fontSize="10" fill="#7D8590" fontFamily="monospace">
+        <text x="100" y="195" textAnchor="middle" fontSize="10" fill="var(--text-dim)" fontFamily="monospace">
           Don't lose your letters!
         </text>
       )}

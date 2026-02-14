@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { containerStyle, cardStyle, btnStyle } from "../styles.js";
+import { containerStyle, cardStyleFor, btnStyle } from "../styles.js";
 
 export default function VersusSetupScreen({
   theme,
   onStartGame,
   onBack,
+  layout,
 }) {
   const [word, setWord] = useState("");
   const [hint, setHint] = useState("");
@@ -49,8 +50,8 @@ export default function VersusSetupScreen({
   };
 
   return (
-    <div style={containerStyle(theme)}>
-      <div style={{ ...cardStyle, maxWidth: 440 }}>
+    <div style={containerStyle(theme, layout)}>
+      <div style={{ ...cardStyleFor(layout), maxWidth: layout.cardMaxWidth - 60 }}>
         <div
           style={{
             display: "flex",
@@ -59,14 +60,14 @@ export default function VersusSetupScreen({
             marginBottom: 20,
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>
+          <h2 style={{ margin: 0, fontSize: layout.titleFontSize, fontWeight: 800 }}>
             🎮 Versus Mode Setup
           </h2>
           <button
             style={{
-              ...btnStyle(false),
+              ...btnStyle(false, layout),
               padding: "8px 14px",
-              fontSize: 12,
+              fontSize: layout.bodyFontSize - 1,
             }}
             onClick={onBack}
           >
@@ -113,6 +114,8 @@ export default function VersusSetupScreen({
                 background: "var(--bg)",
                 color: "var(--text)",
                 fontFamily: "inherit",
+                minHeight: 44,
+                boxSizing: "border-box",
               }}
             />
           </div>
@@ -147,6 +150,8 @@ export default function VersusSetupScreen({
                 background: "var(--bg)",
                 color: "var(--text)",
                 fontFamily: "inherit",
+                minHeight: 44,
+                boxSizing: "border-box",
               }}
             />
           </div>
@@ -181,6 +186,8 @@ export default function VersusSetupScreen({
                 background: "var(--bg)",
                 color: "var(--text)",
                 fontFamily: "inherit",
+                minHeight: 44,
+                boxSizing: "border-box",
               }}
             />
           </div>
@@ -203,10 +210,10 @@ export default function VersusSetupScreen({
           <button
             onClick={handleSubmit}
             style={{
-              ...btnStyle(true),
+              ...btnStyle(true, layout),
               width: "100%",
               padding: "14px",
-              fontSize: 16,
+              fontSize: layout.btnFontSize,
               fontWeight: 800,
               marginTop: 8,
             }}

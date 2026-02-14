@@ -1,12 +1,12 @@
 // ─── Children: Alphabet blocks that topple over ───
-export default function AlphabetBlocksDrawing({ wrongGuesses, maxWrong, won }) {
+export default function AlphabetBlocksDrawing({ wrongGuesses, maxWrong, won, layout }) {
   const remaining = maxWrong - wrongGuesses;
   const letters = "ABCDEFGH".slice(0, maxWrong).split("");
 
   const blockColors = ["#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#FF6B8A", "#845EC2", "#FF9671", "#FFC75F"];
 
   return (
-    <svg viewBox="0 0 200 200" style={{ width: "100%", maxWidth: 220, height: "auto" }}>
+    <svg viewBox="0 0 200 200" style={{ width: "100%", maxWidth: layout?.drawingMaxWidth || 180, maxHeight: layout?.drawingMaxHeight || "28vh", height: "auto" }}>
       {/* Ground / shelf */}
       <rect x="10" y="168" width="180" height="8" rx="4" fill="#D2691E" />
       <rect x="10" y="172" width="180" height="4" rx="2" fill="#8B4513" opacity="0.6" />

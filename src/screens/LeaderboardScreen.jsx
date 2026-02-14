@@ -1,10 +1,11 @@
-import { containerStyle, cardStyle, btnStyle } from "../styles.js";
+import { containerStyle, cardStyleFor, btnStyle } from "../styles.js";
 
 export default function LeaderboardScreen({
   theme,
   allUsers,
   currentUserName,
   onBack,
+  layout,
 }) {
   const sorted = [...allUsers]
     .filter((u) => u.score > 0)
@@ -12,8 +13,8 @@ export default function LeaderboardScreen({
     .slice(0, 15);
 
   return (
-    <div style={containerStyle(theme)}>
-      <div style={{ ...cardStyle, maxWidth: 440 }}>
+    <div style={containerStyle(theme, layout)}>
+      <div style={{ ...cardStyleFor(layout), maxWidth: layout.cardMaxWidth - 60 }}>
         <div
           style={{
             display: "flex",
@@ -22,10 +23,10 @@ export default function LeaderboardScreen({
             marginBottom: 20,
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>
+          <h2 style={{ margin: 0, fontSize: layout.titleFontSize, fontWeight: 800 }}>
             🏆 Leaderboard
           </h2>
-          <button style={btnStyle(false)} onClick={onBack}>
+          <button style={btnStyle(false, layout)} onClick={onBack}>
             ← Back
           </button>
         </div>

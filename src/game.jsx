@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getRandomWord, getLevel } from "./words.js";
 import { getTheme, containerStyle } from "./styles.js";
+import { useDevice } from "./useDevice.js";
 
 // ─── Screens ───
 import LoginScreen from "./screens/LoginScreen.jsx";
@@ -8,6 +9,20 @@ import MenuScreen from "./screens/MenuScreen.jsx";
 import LeaderboardScreen from "./screens/LeaderboardScreen.jsx";
 import GameScreen from "./screens/GameScreen.jsx";
 import VersusSetupScreen from "./screens/VersusSetupScreen.jsx";
+
+// ─── System dark mode hook ───
+function useSystemDarkMode() {
+  const [prefersDark, setPrefersDark] = useState(
+    () => window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e) => setPrefersDark(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return prefersDark;
+}
 
 // ─── Main App ───
 export default function LastLetter() {
@@ -35,7 +50,9 @@ export default function LastLetter() {
 
   const maxWrong = gameMode === "children" ? 8 : difficulty === "challenge" ? 6 : 8;
   const isChild = user && user.age < 13;
-  const theme = getTheme(isChild, gameMode);
+  const prefersDark = useSystemDarkMode();
+  const theme = getTheme(isChild, gameMode, prefersDark);
+  const deviceInfo = useDevice();
 
   // ─── Storage ───
   useEffect(() => {
@@ -186,8 +203,8 @@ export default function LastLetter() {
   // ─── Render ───
   if (screen === "loading") {
     return (
-      <div style={{ ...containerStyle(theme), justifyContent: "center" }}>
-        <div style={{ fontSize: 24, fontWeight: 700 }}>Loading...</div>
+      <div style={{ ...containerStyle(theme, deviceInfo), justifyContent: "center" }}>
+        <div style={{ fontSize: deviceInfo.titleFontSize, fontWeight: 700 }}>Loading...</div>
       </div>
     );
   }
@@ -199,6 +216,8 @@ export default function LastLetter() {
         loginAge={loginAge} setLoginAge={setLoginAge}
         loginError={loginError} setLoginError={setLoginError}
         onLogin={handleLogin}
+        prefersDark={prefersDark}
+        layout={deviceInfo}
       />
     );
   }
@@ -211,6 +230,7 @@ export default function LastLetter() {
         onStartGame={startGame} onLogout={handleLogout}
         onLeaderboard={() => setScreen("leaderboard")}
         onVersusMode={startVersusMode}
+        layout={deviceInfo}
       />
     );
   }
@@ -221,6 +241,7 @@ export default function LastLetter() {
         theme={theme}
         onStartGame={startVersusGame}
         onBack={() => setScreen("menu")}
+        layout={deviceInfo}
       />
     );
   }
@@ -231,6 +252,7 @@ export default function LastLetter() {
         theme={theme} allUsers={allUsers}
         currentUserName={user?.name}
         onBack={() => setScreen("menu")}
+        layout={deviceInfo}
       />
     );
   }
@@ -252,6 +274,7 @@ export default function LastLetter() {
         onNextWord={() => pickNewWord(gameMode, difficulty)}
         onMenu={() => setScreen("menu")}
         calculateScore={calculateScore}
+        layout={deviceInfo}
       />
     );
   }

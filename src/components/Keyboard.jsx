@@ -8,6 +8,7 @@ export default function Keyboard({
   gameStatus,
   usePhonicsClusters,
   onGuess,
+  layout,
 }) {
   const getKeyboardLetters = () => {
     if (gameMode === "children" && usePhonicsClusters) {
@@ -46,17 +47,20 @@ export default function Keyboard({
         onClick={() => onGuess(key)}
         disabled={isGuessed || gameStatus !== "playing"}
         style={{
-          width: isPhonics ? 52 : 38,
-          height: 42,
-          margin: 2,
+          flex: isPhonics ? "0 0 auto" : "1 1 0",
+          minWidth: isPhonics ? layout.phonicsKeyWidth : 0,
+          maxWidth: isPhonics ? layout.phonicsKeyWidth + 12 : layout.keyMaxWidth,
+          height: layout.keyHeight,
+          margin: `${layout.keyGap}px ${Math.max(1, layout.keyGap - 1)}px`,
+          padding: 0,
           border: "none",
-          borderRadius: 8,
-          fontSize: isPhonics ? 13 : 15,
+          borderRadius: layout.device === "mobile" ? 8 : 10,
+          fontSize: isPhonics ? layout.phFontSize : layout.keyFontSize,
           fontWeight: 700,
           fontFamily: "'Courier Prime', 'Courier New', monospace",
           cursor:
             isGuessed || gameStatus !== "playing" ? "default" : "pointer",
-          transition: "all 0.2s ease",
+          transition: "all 0.15s ease",
           background: wasRight
             ? "var(--correct)"
             : wasWrong
@@ -75,8 +79,12 @@ export default function Keyboard({
               ? "var(--phonics-text)"
               : "var(--text)",
           opacity: isGuessed ? 0.5 : 1,
-          boxShadow: isGuessed ? "none" : "0 2px 4px rgba(0,0,0,0.15)",
+          boxShadow: isGuessed ? "none" : "0 1px 3px rgba(0,0,0,0.12)",
           transform: isGuessed ? "scale(0.95)" : "scale(1)",
+          WebkitTapHighlightColor: "transparent",
+          touchAction: "manipulation",
+          userSelect: "none",
+          WebkitUserSelect: "none",
         }}
       >
         {key}
@@ -89,15 +97,18 @@ export default function Keyboard({
       style={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        gap: 2,
+        alignItems: "stretch",
+        gap: layout.keyGap,
+        width: "100%",
+        maxWidth: layout.kbMaxWidth,
+        margin: "0 auto",
       }}
     >
       {phonics.length > 0 && (
-        <div style={{ marginBottom: 8 }}>
+        <div style={{ marginBottom: 6 }}>
           <div
             style={{
-              fontSize: 11,
+              fontSize: layout.device === "mobile" ? 10 : 11,
               color: "var(--text-dim)",
               textAlign: "center",
               marginBottom: 4,
@@ -113,6 +124,7 @@ export default function Keyboard({
               display: "flex",
               flexWrap: "wrap",
               justifyContent: "center",
+              gap: layout.keyGap + 1,
             }}
           >
             {phonics.map((p) => renderKey(p, true))}

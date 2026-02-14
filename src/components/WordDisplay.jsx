@@ -4,30 +4,33 @@ export default function WordDisplay({
   guessedLetters,
   gameStatus,
   gameMode,
+  layout,
 }) {
   if (!currentWord) return null;
 
   const len = currentWord.word.length;
-  const baseWidth = gameMode === "children" ? 42 : 36;
-  const baseHeight = gameMode === "children" ? 50 : 44;
-  const baseFontSize = gameMode === "children" ? 26 : 22;
-  const maxContainerWidth = 480;
-  const gap = 6;
+  const baseWidth = layout?.tileBaseWidth || (gameMode === "children" ? 38 : 32);
+  const baseHeight = layout?.tileBaseHeight || (gameMode === "children" ? 44 : 38);
+  const baseFontSize = layout?.tileFontSize || (gameMode === "children" ? 22 : 20);
+  const gap = layout?.tileGap || 4;
+  const containerWidth = Math.min((layout?.width || window.innerWidth) - 40, layout?.cardMaxWidth || 480);
   const totalNeeded = len * (baseWidth + gap);
   const scale =
-    totalNeeded > maxContainerWidth ? maxContainerWidth / totalNeeded : 1;
+    totalNeeded > containerWidth ? containerWidth / totalNeeded : 1;
   const tileWidth = Math.floor(baseWidth * scale);
   const tileHeight = Math.floor(baseHeight * scale);
   const tileFontSize = Math.floor(baseFontSize * scale);
-  const tileMargin = Math.max(1, Math.floor(3 * scale));
+  const tileMargin = Math.max(1, Math.floor(2 * scale));
 
   return (
     <div
       style={{
         display: "flex",
         justifyContent: "center",
-        marginBottom: 16,
-        gap: 2,
+        flexWrap: "nowrap",
+        marginBottom: layout?.device === "mobile" ? 10 : 16,
+        gap: 1,
+        width: "100%",
       }}
     >
       {currentWord.word.split("").map((letter, i) => {
@@ -45,7 +48,7 @@ export default function WordDisplay({
               borderBottom: `${Math.max(2, Math.floor(3 * scale))}px solid ${
                 revealed
                   ? gameStatus === "lost" && !guessedLetters.has(letter)
-                    ? "#e74c3c"
+                    ? "var(--wrong)"
                     : "var(--accent)"
                   : "var(--text-dim)"
               }`,
@@ -54,7 +57,7 @@ export default function WordDisplay({
               fontFamily: "'Courier Prime', 'Courier New', monospace",
               color:
                 gameStatus === "lost" && !guessedLetters.has(letter)
-                  ? "#e74c3c"
+                  ? "var(--wrong)"
                   : "var(--text)",
               transition: "all 0.3s ease",
             }}

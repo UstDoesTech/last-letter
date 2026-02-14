@@ -1,7 +1,7 @@
 import { HangmanDrawing, LetterFadeDrawing, AlphabetBlocksDrawing } from "../components/drawings/index.js";
 import Keyboard from "../components/Keyboard.jsx";
 import WordDisplay from "../components/WordDisplay.jsx";
-import { containerStyle, cardStyle, btnStyle } from "../styles.js";
+import { containerStyle, cardStyleFor, btnStyle } from "../styles.js";
 
 export default function GameScreen({
   theme,
@@ -26,38 +26,41 @@ export default function GameScreen({
   onNextWord,
   onMenu,
   calculateScore,
+  layout,
 }) {
   const visual =
     visualStyle === "classic" ? (
-      <HangmanDrawing wrongGuesses={wrongGuesses} maxWrong={maxWrong} />
+      <HangmanDrawing wrongGuesses={wrongGuesses} maxWrong={maxWrong} layout={layout} />
     ) : visualStyle === "blocks" ? (
       <AlphabetBlocksDrawing
         wrongGuesses={wrongGuesses}
         maxWrong={maxWrong}
         won={gameStatus === "won"}
+        layout={layout}
       />
     ) : (
-      <LetterFadeDrawing wrongGuesses={wrongGuesses} maxWrong={maxWrong} />
+      <LetterFadeDrawing wrongGuesses={wrongGuesses} maxWrong={maxWrong} layout={layout} />
     );
 
   return (
-    <div style={containerStyle(theme)}>
+    <div style={containerStyle(theme, layout)}>
       {/* Top bar */}
       <div
         style={{
           width: "100%",
-          maxWidth: 520,
+          maxWidth: layout.cardMaxWidth,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 12,
+          marginBottom: 8,
+          padding: "0 2px",
         }}
       >
         <button
           style={{
-            ...btnStyle(false),
+            ...btnStyle(false, layout),
             padding: "8px 14px",
-            fontSize: 12,
+            fontSize: layout.bodyFontSize - 1,
           }}
           onClick={onMenu}
         >
@@ -67,8 +70,8 @@ export default function GameScreen({
           <div
             style={{
               display: "flex",
-              gap: 16,
-              fontSize: 13,
+              gap: layout.topBarGap,
+              fontSize: layout.bodyFontSize,
               fontWeight: 700,
             }}
           >
@@ -85,7 +88,7 @@ export default function GameScreen({
         {isVersusMode && (
           <div
             style={{
-              fontSize: 13,
+              fontSize: layout.bodyFontSize,
               fontWeight: 700,
               color: "var(--accent)",
             }}
@@ -95,7 +98,7 @@ export default function GameScreen({
         )}
       </div>
 
-      <div style={{ ...cardStyle, position: "relative" }}>
+      <div style={{ ...cardStyleFor(layout), position: "relative" }}>
         {/* Category & lives */}
         <div
           style={{
@@ -107,7 +110,7 @@ export default function GameScreen({
         >
           <span
             style={{
-              fontSize: 11,
+              fontSize: layout.device === "mobile" ? 10 : 12,
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: 1,
@@ -121,7 +124,7 @@ export default function GameScreen({
           </span>
           <span
             style={{
-              fontSize: 13,
+              fontSize: layout.bodyFontSize,
               fontWeight: 700,
               color:
                 wrongGuesses >= maxWrong - 2
@@ -152,9 +155,9 @@ export default function GameScreen({
                 key={key}
                 onClick={() => setVisualStyle(key)}
                 style={{
-                  padding: "4px 14px",
+                  padding: layout.device === "mobile" ? "4px 12px" : "6px 18px",
                   borderRadius: 20,
-                  fontSize: 11,
+                  fontSize: layout.device === "mobile" ? 11 : 12,
                   fontWeight: 700,
                   border: `1px solid ${
                     visualStyle === key
@@ -171,6 +174,9 @@ export default function GameScreen({
                       : "var(--text-dim)",
                   cursor: "pointer",
                   transition: "all 0.2s",
+                  minHeight: layout.device === "mobile" ? 32 : 36,
+                  WebkitTapHighlightColor: "transparent",
+                  touchAction: "manipulation",
                 }}
               >
                 {label}
@@ -193,9 +199,9 @@ export default function GameScreen({
                 setUsePhonicsClusters(!usePhonicsClusters)
               }
               style={{
-                padding: "4px 14px",
+                padding: layout.device === "mobile" ? "4px 12px" : "6px 18px",
                 borderRadius: 20,
-                fontSize: 11,
+                fontSize: layout.device === "mobile" ? 11 : 12,
                 fontWeight: 700,
                 border: `1px solid ${
                   usePhonicsClusters
@@ -209,6 +215,9 @@ export default function GameScreen({
                   ? "var(--accent)"
                   : "var(--text-dim)",
                 cursor: "pointer",
+                minHeight: layout.device === "mobile" ? 32 : 36,
+                WebkitTapHighlightColor: "transparent",
+                touchAction: "manipulation",
               }}
             >
               {usePhonicsClusters ? "🔤 Phonics ON" : "🔤 Phonics OFF"}
@@ -221,7 +230,8 @@ export default function GameScreen({
           style={{
             display: "flex",
             justifyContent: "center",
-            margin: "8px 0 16px",
+            margin: layout.device === "mobile" ? "4px 0 8px" : "8px 0 16px",
+            maxHeight: layout.drawingMaxHeight,
           }}
         >
           {visual}
@@ -233,20 +243,21 @@ export default function GameScreen({
           guessedLetters={guessedLetters}
           gameStatus={gameStatus}
           gameMode={gameMode}
+          layout={layout}
         />
 
         {/* Hint */}
         <div
           style={{
             textAlign: "center",
-            marginBottom: 16,
+            marginBottom: layout.hintMarginBottom,
             minHeight: 28,
           }}
         >
           {showHint ? (
             <div
               style={{
-                fontSize: 13,
+                fontSize: layout.bodyFontSize,
                 color: "var(--text-dim)",
                 fontStyle: "italic",
               }}
@@ -259,12 +270,15 @@ export default function GameScreen({
               style={{
                 padding: "4px 16px",
                 borderRadius: 20,
-                fontSize: 12,
+                fontSize: layout.bodyFontSize - 1,
                 fontWeight: 600,
                 border: "1px dashed var(--border)",
                 background: "transparent",
                 color: "var(--text-dim)",
                 cursor: "pointer",
+                minHeight: 36,
+                WebkitTapHighlightColor: "transparent",
+                touchAction: "manipulation",
               }}
             >
               Need a hint? (-15 pts)
@@ -277,15 +291,11 @@ export default function GameScreen({
           <div
             style={{
               textAlign: "center",
-              padding: "20px",
+              padding: layout.overlayPadding,
               background:
                 gameStatus === "won"
-                  ? gameMode === "children"
-                    ? "#FFF8E1"
-                    : "#0D2818"
-                  : gameMode === "children"
-                  ? "#FFF0F0"
-                  : "#2D1117",
+                  ? "var(--overlay-won)"
+                  : "var(--overlay-lost)",
               borderRadius: 12,
               marginBottom: 16,
               border: `1px solid ${
@@ -295,7 +305,7 @@ export default function GameScreen({
               }`,
             }}
           >
-            <div style={{ fontSize: 32, marginBottom: 8 }}>
+            <div style={{ fontSize: layout.overlayEmoji, marginBottom: 8 }}>
               {gameStatus === "won"
                 ? gameMode === "children"
                   ? "🌟🎉🌟"
@@ -306,7 +316,7 @@ export default function GameScreen({
             </div>
             <div
               style={{
-                fontSize: 20,
+                fontSize: layout.overlayTitle,
                 fontWeight: 800,
                 marginBottom: 4,
               }}
@@ -320,7 +330,7 @@ export default function GameScreen({
             {gameStatus === "won" && !isVersusMode && (
               <div
                 style={{
-                  fontSize: 14,
+                  fontSize: layout.bodyFontSize + 1,
                   color: "var(--correct)",
                   fontWeight: 700,
                   marginBottom: 4,
@@ -332,7 +342,7 @@ export default function GameScreen({
             {gameStatus === "lost" && (
               <div
                 style={{
-                  fontSize: 14,
+                  fontSize: layout.bodyFontSize + 1,
                   color: "var(--text-dim)",
                   marginBottom: 4,
                 }}
@@ -349,16 +359,17 @@ export default function GameScreen({
                 gap: 10,
                 justifyContent: "center",
                 marginTop: 14,
+                flexWrap: "wrap",
               }}
             >
               {!isVersusMode && (
-                <button style={btnStyle(true)} onClick={onNextWord}>
+                <button style={btnStyle(true, layout)} onClick={onNextWord}>
                   {gameMode === "children"
                     ? "Play Again! 🔤"
                     : "Next Word →"}
                 </button>
               )}
-              <button style={btnStyle(isVersusMode ? true : false)} onClick={onMenu}>
+              <button style={btnStyle(isVersusMode ? true : false, layout)} onClick={onMenu}>
                 {isVersusMode ? "Back to Menu" : "Menu"}
               </button>
             </div>
@@ -374,6 +385,7 @@ export default function GameScreen({
             gameStatus={gameStatus}
             usePhonicsClusters={usePhonicsClusters}
             onGuess={onGuess}
+            layout={layout}
           />
         )}
       </div>
