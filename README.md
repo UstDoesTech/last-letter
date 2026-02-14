@@ -113,4 +113,4 @@ All sizing flows from the `useDevice` hook through a `layout` prop passed to eve
 
 ## License
 
-Private — not published to npm.
+This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this software as long as the original copyright notice and license are included (citation).
