@@ -116,6 +116,26 @@ export default function MenuScreen({
                   </span>
                 </button>
               ))}
+              <button
+                onClick={onVersusMode}
+                style={{
+                  ...btnStyle(false),
+                  textAlign: "left",
+                  padding: "16px 18px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                <span style={{ fontWeight: 800, fontSize: 16 }}>
+                  🎮 Versus Mode
+                </span>
+                <span
+                  style={{ fontSize: 12, color: "var(--text-dim)" }}
+                >
+                  Play with a friend · Local play
+                </span>
+              </button>
             </div>
           </>
         ) : (
