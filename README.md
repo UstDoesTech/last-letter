@@ -1,3 +1,5 @@
+**Preamble:** This game was built (vibed) for my children so that they can play a version of hangman by themselves, with each other, their friends, and with me and their mum. While it is built for them, it's open for everyone to enjoy at [last-letter.app](https://last-letter.app)
+
 # Last Letter
 
 A word-guessing game built with React and Vite. Guess the word before you run out of letters — with separate modes for children and adults, system-aware theming, and responsive layouts that adapt to any device.
